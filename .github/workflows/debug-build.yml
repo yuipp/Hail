@@ -1,0 +1,26 @@
+name: Debug Build (fork)
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Setup Java JDK
+        uses: actions/setup-java@v5.7.0
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: Hail-debug-patched
+          path: app/build/outputs/apk/debug/*.apk
