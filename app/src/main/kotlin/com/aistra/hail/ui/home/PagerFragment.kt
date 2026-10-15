@@ -148,7 +148,10 @@ class PagerFragment : MainFragment(), PagerAdapter.OnItemClickListener, PagerAda
         }
     }.let {
         binding.empty.isVisible = it.isEmpty()
-        pagerAdapter.submitList(it)
+        // "active first": if the order changed (app launched/unfrozen), return to the top
+        val reordered = HailData.sortActiveFirst &&
+                pagerAdapter.currentList.map { a -> a.packageName } != it.map { a -> a.packageName }
+        pagerAdapter.submitList(it) { if (reordered) _binding?.recyclerView?.scrollToPosition(0) }
         app.setAutoFreezeService()
     }
 
