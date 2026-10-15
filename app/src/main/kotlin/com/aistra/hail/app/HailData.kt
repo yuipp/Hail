@@ -32,6 +32,7 @@ object HailData {
     const val KEY_PACKAGE = "package"
     const val KEY_FROZEN = "frozen"
     private const val SORT_BY = "sort_by"
+    private const val SORT_ACTIVE_FIRST = "sort_active_first"
     const val SORT_NAME = "name"
     const val SORT_INSTALL = "install"
     const val SORT_UPDATE = "update"
@@ -132,6 +133,9 @@ object HailData {
 
     private val sp = PreferenceManager.getDefaultSharedPreferences(app)
     val sortBy get() = sp.getString(SORT_BY, SORT_NAME)
+    var sortActiveFirst
+        get() = sp.getBoolean(SORT_ACTIVE_FIRST, false)
+        set(value) = sp.edit { putBoolean(SORT_ACTIVE_FIRST, value) }
     val filterUserApps get() = sp.getBoolean(FILTER_USER_APPS, true)
     val filterSystemApps get() = sp.getBoolean(FILTER_SYSTEM_APPS, false)
     val filterFrozenApps get() = sp.getBoolean(FILTER_FROZEN_APPS, true)
