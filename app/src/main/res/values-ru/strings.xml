@@ -158,4 +158,5 @@
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Тёмная</string>
     <string name="xposed_description">Авторазморзка приостановленных приложений изолированного профиля</string>
+    <string name="action_sort_active_first">Активные сверху</string>
 </resources>
