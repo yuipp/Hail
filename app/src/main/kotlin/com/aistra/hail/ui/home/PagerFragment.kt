@@ -135,7 +135,18 @@ class PagerFragment : MainFragment(), PagerAdapter.OnItemClickListener, PagerAda
         )) || FuzzySearch.search(it.packageName, query) || FuzzySearch.search(
             it.name.toString(), query
         ) || PinyinSearch.searchPinyinAll(it.name.toString(), query))
-    }.sortedWith(NameComparator).let {
+    }.let { list ->
+        if (!HailData.sortActiveFirst) list.sortedWith(NameComparator)
+        else {
+            // state is computed once per app, not on every comparison
+            val rank = list.associate { it.packageName to if (it.state == AppInfo.State.UNFROZEN) 0 else 1 }
+            list.sortedWith(
+                compareBy<AppInfo>({ !it.pinned }, { rank[it.packageName] }).thenComparator { a, b ->
+                    NameComparator.compare(a, b)
+                }
+            )
+        }
+    }.let {
         binding.empty.isVisible = it.isEmpty()
         pagerAdapter.submitList(it)
         app.setAutoFreezeService()
@@ -557,6 +568,12 @@ class PagerFragment : MainFragment(), PagerAdapter.OnItemClickListener, PagerAda
                 } else deselect()
             }
 
+            R.id.action_sort_active_first -> {
+                item.isChecked = !item.isChecked
+                HailData.sortActiveFirst = item.isChecked
+                updateCurrentList()
+            }
+
             R.id.action_freeze_current -> setListFrozen(true, pagerAdapter.currentList.filterNot { it.whitelisted })
 
             R.id.action_unfreeze_current -> setListFrozen(false, pagerAdapter.currentList)
@@ -601,6 +618,7 @@ class PagerFragment : MainFragment(), PagerAdapter.OnItemClickListener, PagerAda
             override fun onQueryTextSubmit(query: String): Boolean = true
         })
         menu.findItem(R.id.action_multiselect).updateIcon()
+        menu.findItem(R.id.action_sort_active_first).isChecked = HailData.sortActiveFirst
     }
 
     override fun onDestroyView() {
