@@ -159,4 +159,5 @@
     <string name="theme_light">Світла</string>
     <string name="theme_dark">Темна</string>
     <string name="xposed_description">Дозволити ізольованим застосункам запускати призупинені застосунки</string>
-</resources>
+    <string name="action_sort_active_first">Актив зас�dng>
+    <string name="action_sort_aingortrst">��dn�тu
